@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { TextField, Typography, Box } from "@mui/material";
-import Grid from "@mui/material/Grid2"; // Import Grid2
+import Grid from "@mui/material/Grid2";
+import { useCost } from "../../../../context/costContext";
 
 function MaterialCost({ onCostChange, rejectRate, materialScrapRate }) {
-  const [materialWeight, setMaterialWeight] = useState("");
-  const [unitPrice, setUnitPrice] = useState("");
-  const [scrapRate, setScrapRate] = useState("");
-  const [rejectedRate, setRejectedRate] = useState("");
+  const { materialCostData, setMaterialCostData } = useCost();
 
   useEffect(() => {
-    setRejectedRate(rejectedRate);
-    rejectRate(rejectedRate);
-    materialScrapRate(scrapRate);
-  }, [rejectedRate, rejectRate, scrapRate, materialScrapRate]);
+    rejectRate(materialCostData.rejectedRate);
+    materialScrapRate(materialCostData.scrapRate);
+  }, [materialCostData.rejectedRate, materialCostData.scrapRate, rejectRate, materialScrapRate]);
 
   const calculateMaterialCost = () => {
-    const weight = parseFloat(materialWeight);
-    const price = parseFloat(unitPrice);
-    const scrap = parseFloat(scrapRate) / 100;
-    const reject = parseFloat(rejectedRate) / 100;
+    const weight = parseFloat(materialCostData.materialWeight);
+    const price = parseFloat(materialCostData.unitPrice);
+    const scrap = parseFloat(materialCostData.scrapRate) / 100;
+    const reject = parseFloat(materialCostData.rejectedRate) / 100;
 
     if (!isNaN(weight) && !isNaN(price) && !isNaN(scrap) && !isNaN(reject)) {
       const totalRawMaterial = (weight * price) / ((1 - scrap) * (1 - reject));
@@ -26,6 +23,13 @@ function MaterialCost({ onCostChange, rejectRate, materialScrapRate }) {
       return totalRawMaterial.toFixed(2);
     }
     return "0.00";
+  };
+
+  const handleChange = (field, value) => {
+    setMaterialCostData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
 
   return (
@@ -40,8 +44,8 @@ function MaterialCost({ onCostChange, rejectRate, materialScrapRate }) {
             fullWidth
             placeholder="Enter weight"
             type="number"
-            value={materialWeight}
-            onChange={(e) => setMaterialWeight(e.target.value)}
+            value={materialCostData.materialWeight}
+            onChange={(e) => handleChange("materialWeight", e.target.value)}
           />
         </Grid>
         <Grid size={{ xs: 6 }}>
@@ -50,8 +54,8 @@ function MaterialCost({ onCostChange, rejectRate, materialScrapRate }) {
             fullWidth
             placeholder="Enter price"
             type="number"
-            value={unitPrice}
-            onChange={(e) => setUnitPrice(e.target.value)}
+            value={materialCostData.unitPrice}
+            onChange={(e) => handleChange("unitPrice", e.target.value)}
           />
         </Grid>
         <Grid size={{ xs: 6 }}>
@@ -60,8 +64,8 @@ function MaterialCost({ onCostChange, rejectRate, materialScrapRate }) {
             fullWidth
             placeholder="Enter scrap rate"
             type="number"
-            value={scrapRate}
-            onChange={(e) => setScrapRate(e.target.value)}
+            value={materialCostData.scrapRate}
+            onChange={(e) => handleChange("scrapRate", e.target.value)}
           />
         </Grid>
         <Grid size={{ xs: 6 }}>
@@ -70,8 +74,8 @@ function MaterialCost({ onCostChange, rejectRate, materialScrapRate }) {
             fullWidth
             placeholder="Enter rejected rate"
             type="number"
-            value={rejectedRate}
-            onChange={(e) => setRejectedRate(e.target.value)}
+            value={materialCostData.rejectedRate}
+            onChange={(e) => handleChange("rejectedRate", e.target.value)}
           />
         </Grid>
       </Grid>

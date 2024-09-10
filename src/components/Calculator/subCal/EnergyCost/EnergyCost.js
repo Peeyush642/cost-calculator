@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TextField, Typography, Box } from '@mui/material';
 import Grid from "@mui/material/Grid2";
+import { useCost } from "../../../../context/costContext";  
 
 function EnergyCost({ onCostChange, materialScrapRate, rejectRate }) {
-  const [consumptionRate, setConsumptionRate] = useState("");
-  const [energyPrice, setEnergyPrice] = useState("");
+  const { energyCostData, setEnergyCostData } = useCost(); // Get energy data from context
 
   const calculateEnergyCost = () => {
-    const energyCost = (consumptionRate * energyPrice)/((1 - materialScrapRate/100) * (1 - rejectRate/100));
-    onCostChange(energyCost); 
+    const energyCost = (energyCostData.consumptionRate * energyCostData.energyPrice) / ((1 - materialScrapRate / 100) * (1 - rejectRate / 100));
+    onCostChange(energyCost);
     return energyCost.toFixed(2);
+  };
+
+  const handleChange = (field, value) => {
+    setEnergyCostData(prevData => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
 
   return (
@@ -18,22 +25,22 @@ function EnergyCost({ onCostChange, materialScrapRate, rejectRate }) {
         Energy Cost
       </Typography>
       <Grid container spacing={2}>
-        <Grid item size={{xs:6}}>
+        <Grid item size={{ xs: 6 }}>
           <TextField
             label="Consumption Rate"
             fullWidth
             type="number"
-            value={consumptionRate}
-            onChange={e => setConsumptionRate(e.target.value)}
+            value={energyCostData.consumptionRate}
+            onChange={e => handleChange('consumptionRate', e.target.value)}
           />
         </Grid>
-        <Grid item size={{xs:6}}>
+        <Grid item size={{ xs: 6 }}>
           <TextField
             label="Energy Price"
             fullWidth
             type="number"
-            value={energyPrice}
-            onChange={e => setEnergyPrice(e.target.value)}
+            value={energyCostData.energyPrice}
+            onChange={e => handleChange('energyPrice', e.target.value)}
           />
         </Grid>
       </Grid>

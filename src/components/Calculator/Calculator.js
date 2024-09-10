@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useCost } from "../../context/costContext"; // Adjust the import path for your project
 import MaterialCost from "./subCal/MaterialCost/MaterialCost";
 import LabourCost from "./subCal/LabourCost/LabourCost";
 import EnergyCost from "./subCal/EnergyCost/EnergyCost";
@@ -8,9 +9,10 @@ import FacilityCost from "./subCal/FacilityCost/FacilityCost";
 import ProgressBar from "./ProgressBar/ProgressBar";
 import { Container, Typography, Box, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
 
 function CostCalculator() {
+  const { resetAllCosts } = useCost(); // Get reset function from context
   const [currentStep, setCurrentStep] = useState(0);
 
   const [materialCost, setMaterialCost] = useState(0);
@@ -19,6 +21,7 @@ function CostCalculator() {
   const [equipmentCost, setEquipmentCost] = useState(0);
   const [toolingCost, setToolingCost] = useState(0);
   const [facilityCost, setFacilityCost] = useState(0);
+
   const [rejectRate, setRejectRate] = useState(0);
   const [materialScrapRate, setMaterialScrapRate] = useState(0);
   const [labourPartsPerRun, setLabourPartsPerRun] = useState(0);
@@ -42,6 +45,20 @@ function CostCalculator() {
     if (currentStep > 0) setCurrentStep((prevStep) => prevStep - 1);
   };
 
+  const handleNewCalculation = () => {
+    resetAllCosts(); // Reset context values
+    setCurrentStep(0); // Reset to the first step
+    setMaterialCost(0);
+    setLabourCost(0);
+    setEnergyCost(0);
+    setEquipmentCost(0);
+    setToolingCost(0);
+    setFacilityCost(0);
+    setRejectRate(0);
+    setMaterialScrapRate(0);
+    setLabourPartsPerRun(0);
+  };
+
   // Motion variants for animation
   const stepVariants = {
     initial: { opacity: 0, x: 100 },
@@ -52,17 +69,20 @@ function CostCalculator() {
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" gutterBottom align="center">
-         Cost Calculator
+        Cost Calculator
       </Typography>
 
-      <Grid container spacing={2} flexDirection={"row"} >
+      <Grid container spacing={2} flexDirection={"row"}>
         <Grid item xs={3} minWidth="200px">
-          {/* Progress Bar Component */}
-          <ProgressBar currentStep={currentStep} setCurrentStep={setCurrentStep} />
+          <ProgressBar
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+          />
         </Grid>
-        <Grid item xs={9}  p={2} sx={{width: "60vw"}}>
+
+        <Grid item xs={9} p={2} sx={{ width: "800px" }}>
           <motion.div
-            key={currentStep} // Key is important for Framer Motion to detect step change
+            key={currentStep}
             initial="initial"
             animate="enter"
             exit="exit"
@@ -98,7 +118,10 @@ function CostCalculator() {
               />
             )}
             {currentStep === 4 && (
-              <ToolingCost onCostChange={setToolingCost} />
+              <ToolingCost
+                onCostChange={setToolingCost}
+                partsPerRun={labourPartsPerRun}
+              />
             )}
             {currentStep === 5 && (
               <FacilityCost
@@ -112,23 +135,41 @@ function CostCalculator() {
       </Grid>
 
       <Box mt={4} textAlign="center">
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleBackClick}
-          disabled={currentStep === 0}
-          sx={{ marginRight: "10px" }}
-        >
-          Back
-        </Button>
-        {currentStep < 5 ? (
-          <Button variant="contained" color="primary" onClick={handleNextClick}>
-            Next
+        <Box>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleBackClick}
+            disabled={currentStep === 0}
+            sx={{ marginRight: "10px" }}
+          >
+            Back
           </Button>
-        ) : (
-          <Typography variant="h5">
-            Total Cost per Part: <strong>{calculateTotalCost()}</strong>
-          </Typography>
+          {currentStep === 5 && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleNewCalculation}
+          >
+            New Calculation
+          </Button>
+        )}
+          {currentStep < 5 && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleNextClick}
+            >
+              Next
+            </Button>
+          )}
+        </Box>
+        {currentStep === 5 && (
+          <Box mt={2}>
+            <Typography variant="h5">
+              Total Cost per Part: <strong>{calculateTotalCost()}</strong>
+            </Typography>
+          </Box>
         )}
       </Box>
     </Container>

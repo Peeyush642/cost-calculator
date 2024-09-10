@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { TextField, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import { useCost } from "../../../../context/costContext";  
 
 function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
-  const [facilityInvestment, setFacilityInvestment] = useState("");
-  const [facilityLife, setFacilityLife] = useState("");
-  const [annualAvailableTime, setAnnualAvailableTime] = useState("");
-  const [processTime, setProcessTime] = useState("");
+  const { facilityCostData, setFacilityCostData } = useCost(); 
 
   const calculateFacilityCost = () => {
     const facilityCostRate =
-      facilityInvestment / (facilityLife * annualAvailableTime);
+      facilityCostData.facilityInvestment / (facilityCostData.facilityLife * facilityCostData.anualAvailableTime);
     const facilityCost =
-      (facilityCostRate * processTime) / ((1 - rejectRate / 100) * partsPerRun);
+      (facilityCostRate * facilityCostData.processTime) / ((1 - rejectRate / 100) * partsPerRun);
     onCostChange(facilityCost); 
     return facilityCost.toFixed(2);
+  };
+
+  const handleChange = (field, value) => {
+    setFacilityCostData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
 
   return (
@@ -28,8 +33,8 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
             label="Facility Investment"
             fullWidth
             type="number"
-            value={facilityInvestment}
-            onChange={(e) => setFacilityInvestment(e.target.value)}
+            value={facilityCostData.facilityInvestment}
+            onChange={(e) => handleChange("facilityInvestment", e.target.value)}
           />
         </Grid>
         <Grid item size={{ xs: 6 }}>
@@ -37,8 +42,8 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
             label="Facility Life"
             fullWidth
             type="number"
-            value={facilityLife}
-            onChange={(e) => setFacilityLife(e.target.value)}
+            value={facilityCostData.facilityLife}
+            onChange={(e) => handleChange("facilityLife", e.target.value)}
           />
         </Grid>
         <Grid item size={{ xs: 6 }}>
@@ -46,8 +51,8 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
             label="Annual Available Time"
             fullWidth
             type="number"
-            value={annualAvailableTime}
-            onChange={(e) => setAnnualAvailableTime(e.target.value)}
+            value={facilityCostData.anualAvailableTime}
+            onChange={(e) => handleChange("anualAvailableTime", e.target.value)}
           />
         </Grid>
         <Grid item size={{ xs: 6 }}>
@@ -55,8 +60,8 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
             label="Process Time"
             fullWidth
             type="number"
-            value={processTime}
-            onChange={(e) => setProcessTime(e.target.value)}
+            value={facilityCostData.processTime}
+            onChange={(e) => handleChange("processTime", e.target.value)}
           />
         </Grid>
       </Grid>

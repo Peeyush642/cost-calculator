@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { TextField, Typography, Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { useCost } from "../../../../context/costContext"; 
 
 function LabourCost({ onCostChange, rejectRate, labourPartsPerRun }) {
-  const [labourTime, setLabourTime] = useState("");
-  const [labourRate, setLabourRate] = useState("");
-  const [partsPerRun, setPartsPerRun] = useState("");
+  const { laborCostData, setLaborCostData } = useCost(); // Get labour data from context
+
+  useEffect(() => {
+    labourPartsPerRun(laborCostData.partsPerRun);
+  }, [laborCostData.partsPerRun, labourPartsPerRun]);
 
   const calculateLabourCost = () => {
-    const time = parseFloat(labourTime);
-    const rate = parseFloat(labourRate);
+    const time = parseFloat(laborCostData.laborTime);
+    const rate = parseFloat(laborCostData.laborRate);
     const reject = parseFloat(rejectRate) / 100;
-    const parts = parseFloat(partsPerRun);
+    const parts = parseFloat(laborCostData.partsPerRun);
 
     if (!isNaN(time) && !isNaN(rate) && !isNaN(reject) && !isNaN(parts)) {
       const totalLabourCost = (time * rate) / ((1 - reject) * parts);
       onCostChange(totalLabourCost);
-      labourPartsPerRun(parts);
       return totalLabourCost.toFixed(2);
     }
     return "0.00";
+  };
+
+  const handleChange = (field, value) => {
+    setLaborCostData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
 
   return (
@@ -34,8 +43,8 @@ function LabourCost({ onCostChange, rejectRate, labourPartsPerRun }) {
             fullWidth
             placeholder="Enter time"
             type="number"
-            value={labourTime}
-            onChange={e => setLabourTime(e.target.value)}
+            value={laborCostData.laborTime}
+            onChange={(e) => handleChange("laborTime", e.target.value)}
           />
         </Grid>
         <Grid size={{ xs: 6 }}>
@@ -44,19 +53,18 @@ function LabourCost({ onCostChange, rejectRate, labourPartsPerRun }) {
             fullWidth
             placeholder="Enter rate"
             type="number"
-            value={labourRate}
-            onChange={e => setLabourRate(e.target.value)}
+            value={laborCostData.laborRate}
+            onChange={(e) => handleChange("laborRate", e.target.value)}
           />
         </Grid>
-       
         <Grid size={{ xs: 6 }}>
           <TextField
             label="No. of Parts Per Run"
             fullWidth
             placeholder="Enter parts per run"
             type="number"
-            value={partsPerRun}
-            onChange={e => setPartsPerRun(e.target.value)}
+            value={laborCostData.partsPerRun}
+            onChange={(e) => handleChange("partsPerRun", e.target.value)}
           />
         </Grid>
       </Grid>
