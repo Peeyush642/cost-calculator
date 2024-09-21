@@ -58,8 +58,11 @@ function CostCalculator() {
   const [facilityCost, setFacilityCost] = useState(0);
 
   const [rejectRate, setRejectRate] = useState(0);
-  const [materialScrapRate, setMaterialScrapRate] = useState(0);
-  const [labourPartsPerRun, setLabourPartsPerRun] = useState(1);
+  const [processTime, setProcessTime] = useState(0);
+  const [rejectedRates, setRejectedRates] = useState([]);
+  const [materialScrapRate, setMaterialScrapRate] = useState([]);
+  const [materialWeights, setMaterialWeights] = useState([]);
+  const [labourPartsPerRun, setLabourPartsPerRun] = useState([]);
   const [showComparisonModal, setShowComparisonModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -299,6 +302,8 @@ function CostCalculator() {
               {currentStep === 0 && (
                 <MaterialCost
                   onCostChange={setMaterialCost}
+                  onRejectRatesChange={setRejectedRates}
+                  onWeightsChange={setMaterialWeights}
                   rejectRate={setRejectRate}
                   materialScrapRate={setMaterialScrapRate}
                   selectedProcess={process}
@@ -307,33 +312,38 @@ function CostCalculator() {
               {currentStep === 1 && (
                 <LabourCost
                   onCostChange={setLabourCost}
-                  rejectRate={rejectRate}
+                  rejectRate={rejectedRates}
+                  onPartsPerRunChange={setLabourPartsPerRun}
+                  onProcessTimeChange={setProcessTime}
                 />
               )}
               {currentStep === 2 && (
                 <EnergyCost
                   onCostChange={setEnergyCost}
-                  rejectRate={rejectRate}
+                  rejectRate={rejectedRates}
                   materialScrapRate={materialScrapRate}
+                  materialWeights={materialWeights}
                 />
               )}
               {currentStep === 3 && (
                 <EquipmentCost
                   onCostChange={setEquipmentCost}
-                  rejectRate={rejectRate}
+                  rejectRate={rejectedRates}
                 />
               )}
               {currentStep === 4 && (
                 <ToolingCost
                   onCostChange={setToolingCost}
+                  rejectRate={rejectedRates}
                   partsPerRun={labourPartsPerRun}
                 />
               )}
               {currentStep === 5 && (
                 <FacilityCost
                   onCostChange={setFacilityCost}
-                  rejectRate={rejectRate}
+                  rejectRate={rejectedRates}
                   partsPerRun={labourPartsPerRun}
+                  processTime={processTime}
                 />
               )}
             </motion.div>

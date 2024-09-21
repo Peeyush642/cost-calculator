@@ -3,16 +3,16 @@ import { TextField, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useCost } from "../../../../context/costContext";
 
-function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
+function FacilityCost({ onCostChange, rejectRate, partsPerRun, processTime }) {
   const { facilityCostData, setFacilityCostData } = useCost();
 
   const calculateFacilityCost = () => {
     const facilityCostRate =
       facilityCostData.facilityInvestment /
-      (facilityCostData.facilityLife * facilityCostData.anualAvailableTime);
+      (facilityCostData.facilityLife * facilityCostData.anualAvailableTimeDays * facilityCostData.anualAvailableTimeHours);
     const facilityCost =
-      (facilityCostRate * facilityCostData.processTime) /
-      ((1 - rejectRate / 100) * partsPerRun);
+      (facilityCostRate * processTime[0]) /
+      ((1 - rejectRate[0] / 100) * partsPerRun[0]);
     const roundedFacilityCost = facilityCost.toFixed(2);
     onCostChange(roundedFacilityCost);
     return roundedFacilityCost;
@@ -58,13 +58,23 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
         </Grid>
         <Grid item size={{ xs: 6 }}>
           <TextField
-            label="Annual Available Time (hrs)"
+            label="Annual Available Time in Days per year (hrs)"
             fullWidth
             type="number"
-            value={facilityCostData.anualAvailableTime}
-            onChange={(e) => handleChange("anualAvailableTime", e.target.value)}
+            value={facilityCostData.anualAvailableTimeDays}
+            onChange={(e) => handleChange("anualAvailableTimeDays", e.target.value)}
           />
         </Grid>
+        <Grid item size={{ xs: 6 }}>
+        <TextField
+            label="Annual Available Time in Hours per day (hrs)"
+            fullWidth
+            type="number"
+            value={facilityCostData.anualAvailableTimeHours}
+            onChange={(e) => handleChange("anualAvailableTimeHours", e.target.value)}
+          />
+        </Grid>
+
         <Grid item size={{ xs: 6 }}>
           <TextField
             label="Process Time (hrs)"

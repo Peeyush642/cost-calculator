@@ -57,8 +57,8 @@ export const CostProvider = ({ children }) => {
   const initialFacilityCost = {
     facilityInvestment: "",
     facilityLife: "",
-    anualAvailableTime: "",
-    processTime: "",
+    anualAvailableTimeDays: "",
+    anualAvailableTimeHours: "",
   };
 
   const [materialCostData, setMaterialCostData] =

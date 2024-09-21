@@ -6,19 +6,21 @@ import { useCost } from "../../../../context/costContext"; // Import useCost
 function ToolingCost({ onCostChange, rejectRate, partsPerRun }) {
   const { toolingCostData, setToolingCostData } = useCost(); // Get tooling data from context
 
+  console.log("rejectRate of toooloinnindind", rejectRate);
+  console.log("partsPerRun of toooloinnindind", partsPerRun);
+
   const calculateToolingCost = () => {
     // Ensure all values are treated as numbers using parseFloat
     const toolingInvestment =
       parseFloat(toolingCostData.toolingInvestment) || 0;
     const toolingLifeCycle = parseFloat(toolingCostData.toolingLifeCycle) || 0;
-    const validRejectRate = parseFloat(rejectRate) || 0;
-    const validPartsPerRun = parseFloat(partsPerRun) || 0;
+    const validRejectRate = parseFloat(rejectRate[0] / 100) || 0;
+    const validPartsPerRun = parseFloat(partsPerRun[0]) || 0;
 
     // Perform the calculation with numeric values
     const toolingCost =
-      (toolingInvestment / (1 - validRejectRate)) *
-      validPartsPerRun *
-      toolingLifeCycle;
+      toolingInvestment /
+      ((1 - validRejectRate) * validPartsPerRun * toolingLifeCycle);
     const roundedToolingCost = toolingCost.toFixed(2);
     onCostChange(roundedToolingCost);
     return roundedToolingCost;

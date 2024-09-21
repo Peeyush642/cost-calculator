@@ -14,13 +14,14 @@ function EquipmentCost({ onCostChange, rejectRate }) {
   } = useCost(); // Get equipment data from context
 
   const calculateTotalEquipmentCost = () => {
-    const totalCost = equipmentCostData.reduce((acc, equipment) => {
+    const totalCost = equipmentCostData.reduce((acc, equipment, index) => {
+      const reject = parseFloat(rejectRate[index]);
       const equipmentCostRate =
-        equipment.equipInvest /
-        (equipment.equipLife * equipment.equipAnnuAvilTime);
+        equipment.equipInvest / (equipment.equipLife * equipment.equipAnnuAvilTime * 24);
+      console.log("equipmentCostRate", equipmentCostRate);
       const equipmentCost =
         (equipmentCostRate * equipment.equipTime) /
-        ((1 - rejectRate / 100) * equipment.partsPerRun);
+        ((1 - (reject / 100)) * equipment.partsPerRun);
       return acc + (isNaN(equipmentCost) ? 0 : equipmentCost);
     }, 0);
 
@@ -97,7 +98,7 @@ function EquipmentCost({ onCostChange, rejectRate }) {
             </Grid>
             <Grid item size={{ xs: 6 }}>
               <TextField
-                label="Annual Available Time (hrs)"
+                label="Annual Available Time (Days/Year)"
                 fullWidth
                 type="number"
                 value={equipment.equipAnnuAvilTime}

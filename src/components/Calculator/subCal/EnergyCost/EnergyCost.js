@@ -3,13 +3,16 @@ import { TextField, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useCost } from "../../../../context/costContext";
 
-function EnergyCost({ onCostChange, materialScrapRate, rejectRate }) {
+function EnergyCost({ onCostChange, materialScrapRate, rejectRate, materialWeights }) {
   const { energyCostData, setEnergyCostData } = useCost(); // Get energy data from context
-
+  console.log("scrapRate", materialScrapRate);
   const calculateEnergyCost = () => {
+    const reject = parseFloat(rejectRate[0]) / 100;
+    const scrapRate = parseFloat(materialScrapRate[0]) / 100;
+    const weight = parseFloat(materialWeights[0]);
     const energyCost =
-      (energyCostData.consumptionRate * energyCostData.energyPrice) /
-      ((1 - materialScrapRate / 100) * (1 - rejectRate / 100));
+      (energyCostData.consumptionRate * energyCostData.energyPrice * weight) /
+      ((1 - scrapRate) * (1 - reject));
     const roundedEnergyCost = energyCost.toFixed(2);
     onCostChange(roundedEnergyCost);
     return roundedEnergyCost;

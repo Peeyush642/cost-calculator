@@ -2,19 +2,15 @@ import React, { useEffect } from "react";
 import { TextField, Typography, Box, Button, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useCost } from "../../../../context/costContext";
-// import { use } from "framer-motion/client";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 function roundedValue(value) {
   return Math.round(value * 100) / 100;
 }
 
-function LabourCost({ onCostChange, rejectRate }) {
+function LabourCost({ onCostChange, rejectRate, onPartsPerRunChange, onProcessTimeChange }) {
   const { labourCostData, setLabourCostData, addLabour, removeLabour } =
     useCost(); // Get labour data from context
-
-  // useEffect(() => {
-  //   labourPartsPerRun(labourCostData.partsPerRun);
-  // }, [labourCostData.partsPerRun, labourPartsPerRun]);
 
   const handleChange = (index, field, value) => {
     const updatedLabourData = labourCostData.map((labour, i) =>
@@ -23,14 +19,23 @@ function LabourCost({ onCostChange, rejectRate }) {
     setLabourCostData(updatedLabourData);
   };
 
-  const calculateLabourCost = (labour) => {
+  const partsPerRun = labourCostData.map((labour) => parseFloat(labour.partsPerRun || 0));
+  const processTime = labourCostData.map((labour) => parseFloat(labour.labourTime || 0));
+
+  const calculateLabourCost = (labour, index) => {
     const time = parseFloat(labour.labourTime);
     const rate = parseFloat(labour.labourRate);
     const operators = parseFloat(labour.operators);
-    const reject = parseFloat(rejectRate) / 100;
+    const reject = parseFloat(rejectRate[index]) / 100; // Use the corresponding reject rate
     const labourPartsPerRun = parseFloat(labour.partsPerRun);
 
-    if (!isNaN(time) && !isNaN(rate) && !isNaN(operators) && !isNaN(reject)) {
+    if (
+      !isNaN(time) &&
+      !isNaN(rate) &&
+      !isNaN(operators) &&
+      !isNaN(reject) &&
+      !isNaN(labourPartsPerRun)
+    ) {
       const labourCost =
         ((time * rate * operators) / (1 - reject)) * labourPartsPerRun;
       return labourCost.toFixed(2);
@@ -39,15 +44,17 @@ function LabourCost({ onCostChange, rejectRate }) {
   };
 
   const totalCosts = labourCostData.reduce(
-    (acc, labour) => acc + parseFloat(calculateLabourCost(labour) || 0),
+    (acc, labour, index) => acc + parseFloat(calculateLabourCost(labour, index) || 0),
     0
   );
   const totalLabourCost = roundedValue(totalCosts);
 
   useEffect(() => {
     onCostChange(totalLabourCost);
-    console.log("labour", totalLabourCost);
-  }, [totalLabourCost, onCostChange]);
+    onPartsPerRunChange(partsPerRun);
+    onProcessTimeChange(processTime);
+    console.log("Total Labour Cost: ", totalLabourCost);
+  }, [totalLabourCost, onCostChange, partsPerRun, onPartsPerRunChange]);
 
   return (
     <Box
@@ -82,7 +89,7 @@ function LabourCost({ onCostChange, rejectRate }) {
           </Grid>
           <Grid item size={{ xs: 6 }}>
             <TextField
-              label="Labour Time (hrs)"
+              label="Process Time (hrs)"
               fullWidth
               type="number"
               value={labour.labourTime}
@@ -114,17 +121,9 @@ function LabourCost({ onCostChange, rejectRate }) {
             />
           </Grid>
           <Typography variant="body1" mt={1}>
-            Labour Cost: <strong>{calculateLabourCost(labour)}</strong>
+            Labour Cost: <strong>{calculateLabourCost(labour, index)}</strong>
           </Typography>
           {labourCostData.length > 1 && (
-            // <Button
-            //   variant="outlined"
-            //   color="secondary"
-            //   onClick={() => removeLabour(index)}
-            //   sx={{ mt: 2 }}
-            // >
-            //   Remove Labour
-            // </Button>
             <IconButton
               aria-label="delete"
               color="error"
