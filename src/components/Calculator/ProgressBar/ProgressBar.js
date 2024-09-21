@@ -21,12 +21,17 @@ const ProgressBar = ({ currentStep, setCurrentStep }) => {
           sx={{
             display: "flex",
             alignItems: "center",
-            cursor: "pointer",
+            cursor: currentStep >= index ? "pointer" : "not-allowed",
             padding: "8px",
             backgroundColor: currentStep === index ? "#f0f0f0" : "transparent",
             borderRadius: "5px",
+            pointerEvents: currentStep >= index ? "auto" : "none", // Disable future steps
           }}
-          onClick={() => setCurrentStep(index)}
+          onClick={() => {
+            if (index <= currentStep) {
+              setCurrentStep(index);
+            }
+          }}
         >
           <Typography sx={{ flexGrow: 1 }}>{`${
             index + 1
