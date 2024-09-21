@@ -19,9 +19,9 @@ function ToolingCost({ onCostChange, rejectRate, partsPerRun }) {
       (toolingInvestment / (1 - validRejectRate)) *
       validPartsPerRun *
       toolingLifeCycle;
-
-    onCostChange(toolingCost);
-    return toolingCost.toFixed(2);
+    const roundedToolingCost = toolingCost.toFixed(2);
+    onCostChange(roundedToolingCost);
+    return roundedToolingCost;
   };
 
   const handleChange = (field, value) => {

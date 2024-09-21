@@ -10,8 +10,9 @@ function EnergyCost({ onCostChange, materialScrapRate, rejectRate }) {
     const energyCost =
       (energyCostData.consumptionRate * energyCostData.energyPrice) /
       ((1 - materialScrapRate / 100) * (1 - rejectRate / 100));
-    onCostChange(energyCost.toFixed(2));
-    return energyCost.toFixed(2);
+    const roundedEnergyCost = energyCost.toFixed(2);
+    onCostChange(roundedEnergyCost);
+    return roundedEnergyCost;
   };
 
   const handleChange = (field, value) => {

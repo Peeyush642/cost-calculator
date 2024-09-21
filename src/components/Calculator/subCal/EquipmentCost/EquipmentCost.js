@@ -24,8 +24,10 @@ function EquipmentCost({ onCostChange, rejectRate }) {
       return acc + (isNaN(equipmentCost) ? 0 : equipmentCost);
     }, 0);
 
-    onCostChange(totalCost.toFixed(2));
-    return totalCost.toFixed(2);
+    const roundedTotalCost = totalCost.toFixed(2);
+
+    onCostChange(roundedTotalCost);
+    return roundedTotalCost;
   };
 
   const handleChange = (index, field, value) => {

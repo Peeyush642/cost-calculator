@@ -13,7 +13,7 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
     const facilityCost =
       (facilityCostRate * facilityCostData.processTime) /
       ((1 - rejectRate / 100) * partsPerRun);
-    onCostChange(facilityCost.toFixed(2));
+    onCostChange(facilityCost);
     return facilityCost.toFixed(2);
   };
 

@@ -96,6 +96,19 @@ function MaterialCost({
     return acc + rawMaterialCost;
   }, 0);
 
+  const calculateIndividualSupportMaterialCost = (material) => {
+    const weight = parseFloat(material.materialWeight);
+    const price = parseFloat(material.unitPrice);
+    const scrap = parseFloat(material.scrapRate) / 100;
+    const reject = parseFloat(material.rejectedRate) / 100;
+
+    if (!isNaN(weight) && !isNaN(price) && !isNaN(scrap) && !isNaN(reject)) {
+      let rawMaterialCost = (weight * price) / ((1 - scrap) * (1 - reject));
+      return roundedValue(rawMaterialCost); 
+    }
+    return 0;
+  };
+
   // Calculate total support material cost based on the selected option
   const calculateSupportMaterialCost = () => {
     if (supportCostOption === "rate") {
@@ -104,8 +117,8 @@ function MaterialCost({
       );
     } else {
       return supportMaterials.reduce((acc, material) => {
-        const { rawMaterialCost } = calculateCosts(material);
-        return acc + rawMaterialCost;
+        const individualCost = calculateIndividualSupportMaterialCost(material);
+        return acc + individualCost;
       }, 0);
     }
   };
@@ -122,19 +135,19 @@ function MaterialCost({
     { totalRawMaterialCost: 0, totalSupportMaterialCost: 0 }
   );
 
-  const totalCost = roundedValue(
-    totalCosts.totalRawMaterialCost + totalCosts.totalSupportMaterialCost
-  );
-
   const totalSupportMaterialCost = calculateSupportMaterialCost();
   // const totalCost = roundedValue(
   //   totalRawMaterialCost + totalSupportMaterialCost
   // );
+  const totalCost = roundedValue(
+    totalCosts.totalRawMaterialCost +
+      (totalCosts.totalSupportMaterialCost || totalSupportMaterialCost)
+  );
 
   useEffect(() => {
     onCostChange(totalCost);
     console.log("Material Cost: ", totalCost);
-  }, [totalCost, onCostChange]);
+  }, [totalCost, onCostChange, totalSupportMaterialCost]);
 
   // Add and remove support materials
   // const addSupportMaterial = () => {
@@ -297,92 +310,98 @@ function MaterialCost({
             />
           ) : (
             <>
-              {supportMaterials.map((material, index) => (
-                <Grid container spacing={2} key={index} mb={2}>
-                  <Grid item size={{ xs: 12 }} style={{ position: "relative" }}>
-                    <Typography variant="subtitle1">
-                      Support Material {index + 1}
-                    </Typography>
-                    <IconButton
-                      onClick={() => removeSupportMaterial(index)}
-                      color="error"
-                      style={{
-                        position: "absolute",
-                        right: "0",
-                        top: "-0.5rem",
-                      }}
+              {supportMaterials.map((material, index) => {
+                const individualSupportCost =
+                  calculateIndividualSupportMaterialCost(material);
+                return (
+                  <Grid container spacing={2} key={index} mb={2}>
+                    <Grid
+                      item
+                      size={{ xs: 12 }}
+                      style={{ position: "relative" }}
                     >
-                      <DeleteIcon />
-                    </IconButton>
+                      <Typography variant="subtitle1">
+                        Support Material {index + 1}
+                      </Typography>
+                      <IconButton
+                        onClick={() => removeSupportMaterial(index)}
+                        color="error"
+                        style={{
+                          position: "absolute",
+                          right: "0",
+                          top: "-0.5rem",
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item size={{ xs: 6 }}>
+                      <TextField
+                        label="Part Mat. Weight(KG)"
+                        fullWidth
+                        type="number"
+                        value={material.materialWeight}
+                        onChange={(e) =>
+                          handleSupportMaterialChange(
+                            index,
+                            "materialWeight",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </Grid>
+                    <Grid item size={{ xs: 6 }}>
+                      <TextField
+                        label="Unit Price (&pound;/KG)"
+                        fullWidth
+                        type="number"
+                        value={material.unitPrice}
+                        onChange={(e) =>
+                          handleSupportMaterialChange(
+                            index,
+                            "unitPrice",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </Grid>
+                    <Grid item size={{ xs: 6 }}>
+                      <TextField
+                        label="Scrap Rate (%)"
+                        fullWidth
+                        type="number"
+                        value={material.scrapRate}
+                        onChange={(e) =>
+                          handleSupportMaterialChange(
+                            index,
+                            "scrapRate",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </Grid>
+                    <Grid item size={{ xs: 6 }}>
+                      <TextField
+                        label="Rejected Rate (%)"
+                        fullWidth
+                        type="number"
+                        value={material.rejectedRate}
+                        onChange={(e) =>
+                          handleSupportMaterialChange(
+                            index,
+                            "rejectedRate",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </Grid>
+                    <Typography variant="body1">
+                      Support Material {index + 1} Cost:{" "}
+                      <strong>{individualSupportCost}</strong>
+                    </Typography>
                   </Grid>
-                  <Grid item size={{ xs: 6 }}>
-                    <TextField
-                      label="Part Mat. Weight(KG)"
-                      fullWidth
-                      type="number"
-                      value={material.materialWeight}
-                      onChange={(e) =>
-                        handleSupportMaterialChange(
-                          index,
-                          "materialWeight",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Grid>
-                  <Grid item size={{ xs: 6 }}>
-                    <TextField
-                      label="Unit Price (&pound;/KG)"
-                      fullWidth
-                      type="number"
-                      value={material.unitPrice}
-                      onChange={(e) =>
-                        handleSupportMaterialChange(
-                          index,
-                          "unitPrice",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Grid>
-                  <Grid item size={{ xs: 6 }}>
-                    <TextField
-                      label="Scrap Rate (%)"
-                      fullWidth
-                      type="number"
-                      value={material.scrapRate}
-                      onChange={(e) =>
-                        handleSupportMaterialChange(
-                          index,
-                          "scrapRate",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Grid>
-                  <Grid item size={{ xs: 6 }}>
-                    <TextField
-                      label="Rejected Rate (%)"
-                      fullWidth
-                      type="number"
-                      value={material.rejectedRate}
-                      onChange={(e) =>
-                        handleSupportMaterialChange(
-                          index,
-                          "rejectedRate",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Grid>
-                  <Typography variant="body1">
-                    Support Material Cost:{" "}
-                    <strong>
-                      {calculateSupportMaterialCost(material).rawMaterialCost}
-                    </strong>
-                  </Typography>
-                </Grid>
-              ))}
+                );
+              })}
               <Button
                 variant="contained"
                 color="primary"
