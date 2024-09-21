@@ -458,12 +458,32 @@ function CostCalculator() {
                 <Box mt={2}>
                   <Typography variant="subtitle1">VARTM</Typography>
                   {results.VARTM.map((run, index) => (
-                    <Typography key={index}>
-                      Run {index + 1}: Material - {run.materialCost}, Labour -{" "}
-                      {run.labourCost}, Energy - {run.energyCost}, Equipment -{" "}
-                      {run.equipmentCost}, Tooling - {run.toolingCost}, Facility
-                      - {run.facilityCost}, Total - {run.totalCost}
-                    </Typography>
+                    <Box key={index}>
+                      <Typography variant="subtitle2">
+                        Run {index + 1}
+                      </Typography>
+                      <Typography variant="body2">
+                        Material Cost: {run.materialCost}
+                      </Typography>
+                      <Typography variant="body2">
+                        Labour Cost: {run.labourCost}
+                      </Typography>
+                      <Typography variant="body2">
+                        Energy Cost: {run.energyCost}
+                      </Typography>
+                      <Typography variant="body2">
+                        Equipment Cost: {run.equipmentCost}
+                      </Typography>
+                      <Typography variant="body2">
+                        Tooling Cost: {run.toolingCost}
+                      </Typography>
+                      <Typography variant="body2">
+                        Facility Cost: {run.facilityCost}
+                      </Typography>
+                      <Typography variant="body2">
+                        Total Cost: {run.totalCost}
+                      </Typography>
+                    </Box>
                   ))}
                 </Box>
               )}
