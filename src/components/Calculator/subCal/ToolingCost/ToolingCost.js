@@ -8,15 +8,18 @@ function ToolingCost({ onCostChange, rejectRate, partsPerRun }) {
 
   const calculateToolingCost = () => {
     // Ensure all values are treated as numbers using parseFloat
-    const toolingInvestment = parseFloat(toolingCostData.toolingInvestment) || 0;
+    const toolingInvestment =
+      parseFloat(toolingCostData.toolingInvestment) || 0;
     const toolingLifeCycle = parseFloat(toolingCostData.toolingLifeCycle) || 0;
     const validRejectRate = parseFloat(rejectRate) || 0;
     const validPartsPerRun = parseFloat(partsPerRun) || 0;
 
     // Perform the calculation with numeric values
     const toolingCost =
-      (toolingInvestment / (1 - validRejectRate)) * validPartsPerRun * toolingLifeCycle;
-    
+      (toolingInvestment / (1 - validRejectRate)) *
+      validPartsPerRun *
+      toolingLifeCycle;
+
     onCostChange(toolingCost);
     return toolingCost.toFixed(2);
   };
@@ -29,7 +32,14 @@ function ToolingCost({ onCostChange, rejectRate, partsPerRun }) {
   };
 
   return (
-    <Box p={2} border={1} borderColor="grey.300" borderRadius={2}>
+    <Box
+      p={2}
+      border={1}
+      borderColor="grey.300"
+      borderRadius={2}
+      height={"60vh"}
+      overflow={"scroll"}
+    >
       <Typography variant="h6" gutterBottom>
         Tooling Cost
       </Typography>

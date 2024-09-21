@@ -1,17 +1,19 @@
 import React from "react";
 import { TextField, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useCost } from "../../../../context/costContext";  
+import { useCost } from "../../../../context/costContext";
 
 function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
-  const { facilityCostData, setFacilityCostData } = useCost(); 
+  const { facilityCostData, setFacilityCostData } = useCost();
 
   const calculateFacilityCost = () => {
     const facilityCostRate =
-      facilityCostData.facilityInvestment / (facilityCostData.facilityLife * facilityCostData.anualAvailableTime);
+      facilityCostData.facilityInvestment /
+      (facilityCostData.facilityLife * facilityCostData.anualAvailableTime);
     const facilityCost =
-      (facilityCostRate * facilityCostData.processTime) / ((1 - rejectRate / 100) * partsPerRun);
-    onCostChange(facilityCost); 
+      (facilityCostRate * facilityCostData.processTime) /
+      ((1 - rejectRate / 100) * partsPerRun);
+    onCostChange(facilityCost.toFixed(2));
     return facilityCost.toFixed(2);
   };
 
@@ -23,7 +25,14 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
   };
 
   return (
-    <Box p={2} border={1} borderColor="grey.300" borderRadius={2}>
+    <Box
+      p={2}
+      border={1}
+      borderColor="grey.300"
+      borderRadius={2}
+      height={"60vh"}
+      overflow={"scroll"}
+    >
       <Typography variant="h6" gutterBottom>
         Facility Cost
       </Typography>
@@ -48,7 +57,7 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
         </Grid>
         <Grid item size={{ xs: 6 }}>
           <TextField
-            label="Annual Available Time"
+            label="Annual Available Time (hrs)"
             fullWidth
             type="number"
             value={facilityCostData.anualAvailableTime}
@@ -57,7 +66,7 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun }) {
         </Grid>
         <Grid item size={{ xs: 6 }}>
           <TextField
-            label="Process Time"
+            label="Process Time (hrs)"
             fullWidth
             type="number"
             value={facilityCostData.processTime}

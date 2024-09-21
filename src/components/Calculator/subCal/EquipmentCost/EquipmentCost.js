@@ -1,70 +1,144 @@
-import React from 'react';
-import { TextField, Typography, Box } from '@mui/material';
+import React from "react";
+import { TextField, Typography, Box, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useCost } from "../../../../context/costContext";  
+import Button from "@mui/material/Button";
+import { useCost } from "../../../../context/costContext";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-function EquipmentCost({ onCostChange, rejectRate, partsPerRun }) {
-  const { equipmentCostData, setEquipmentCostData } = useCost(); // Get equipment data from context
+function EquipmentCost({ onCostChange, rejectRate }) {
+  const {
+    equipmentCostData,
+    setEquipmentCostData,
+    addEquipment,
+    removeEquipment,
+  } = useCost(); // Get equipment data from context
 
-  const calculateEquipmentCost = () => {
-    const equipmentCostRate = equipmentCostData.equipInvest / (equipmentCostData.equipLife * equipmentCostData.equipAnnuAvilTime);
-    const equipmentCost = equipmentCostRate * equipmentCostData.equipTime / ((1 - (rejectRate / 100)) * partsPerRun);
-    onCostChange(equipmentCost);
-    return equipmentCost.toFixed(2);
+  const calculateTotalEquipmentCost = () => {
+    const totalCost = equipmentCostData.reduce((acc, equipment) => {
+      const equipmentCostRate =
+        equipment.equipInvest /
+        (equipment.equipLife * equipment.equipAnnuAvilTime);
+      const equipmentCost =
+        (equipmentCostRate * equipment.equipTime) /
+        ((1 - rejectRate / 100) * equipment.partsPerRun);
+      return acc + (isNaN(equipmentCost) ? 0 : equipmentCost);
+    }, 0);
+
+    onCostChange(totalCost.toFixed(2));
+    return totalCost.toFixed(2);
   };
 
-  const handleChange = (field, value) => {
-    setEquipmentCostData(prevData => ({
-      ...prevData,
-      [field]: value,
-    }));
+  const handleChange = (index, field, value) => {
+    setEquipmentCostData((prevData) =>
+      prevData.map((equipment, i) =>
+        i === index ? { ...equipment, [field]: value } : equipment
+      )
+    );
   };
 
   return (
-    <Box p={2} border={1} borderColor="grey.300" borderRadius={2}>
+    <Box
+      p={2}
+      border={1}
+      borderColor="grey.300"
+      borderRadius={2}
+      height={"60vh"}
+      overflow={"scroll"}
+    >
       <Typography variant="h6" gutterBottom>
         Equipment Cost
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item size={{ xs: 6 }}>
-          <TextField
-            label="Equipment Investment"
-            fullWidth
-            type="number"
-            value={equipmentCostData.equipInvest}
-            onChange={e => handleChange('equipInvest', e.target.value)}
-          />
-        </Grid>
-        <Grid item size={{ xs: 6 }}>
-          <TextField
-            label="Equipment Life"
-            fullWidth
-            type="number"
-            value={equipmentCostData.equipLife}
-            onChange={e => handleChange('equipLife', e.target.value)}
-          />
-        </Grid>
-        <Grid item size={{ xs: 6 }}>
-          <TextField
-            label="Annual Available Time"
-            fullWidth
-            type="number"
-            value={equipmentCostData.equipAnnuAvilTime}
-            onChange={e => handleChange('equipAnnuAvilTime', e.target.value)}
-          />
-        </Grid>
-        <Grid item size={{ xs: 6 }}>
-          <TextField
-            label="Process Time"
-            fullWidth
-            type="number"
-            value={equipmentCostData.equipTime}
-            onChange={e => handleChange('equipTime', e.target.value)}
-          />
-        </Grid>
-      </Grid>
+      {equipmentCostData.map((equipment, index) => (
+        <Box key={index} mb={2} position={"relative"}>
+          <Typography variant="subtitle1">Equipment {index + 1}</Typography>
+          {equipmentCostData.length > 1 && (
+            <Grid
+              item
+              xs={12}
+              style={{ position: "absolute", right: "0", top: "-0.5rem" }}
+            >
+              <IconButton onClick={() => removeEquipment(index)} color="error">
+                <DeleteIcon />
+              </IconButton>
+            </Grid>
+          )}
+          <Grid container spacing={2}>
+            <Grid item size={{ xs: 6 }}>
+              <TextField
+                label="Equipment Name"
+                fullWidth
+                value={equipment.name}
+                onChange={(e) => handleChange(index, "name", e.target.value)}
+              />
+            </Grid>
+            <Grid item size={{ xs: 6 }}>
+              <TextField
+                label="Equipment Investment (&pound;)"
+                fullWidth
+                type="number"
+                value={equipment.equipInvest}
+                onChange={(e) =>
+                  handleChange(index, "equipInvest", e.target.value)
+                }
+              />
+            </Grid>
+            <Grid item size={{ xs: 6 }}>
+              <TextField
+                label="Equipment Life"
+                fullWidth
+                type="number"
+                value={equipment.equipLife}
+                onChange={(e) =>
+                  handleChange(index, "equipLife", e.target.value)
+                }
+              />
+            </Grid>
+            <Grid item size={{ xs: 6 }}>
+              <TextField
+                label="Annual Available Time (hrs)"
+                fullWidth
+                type="number"
+                value={equipment.equipAnnuAvilTime}
+                onChange={(e) =>
+                  handleChange(index, "equipAnnuAvilTime", e.target.value)
+                }
+              />
+            </Grid>
+            <Grid item size={{ xs: 6 }}>
+              <TextField
+                label="Equipment Time (hrs)"
+                fullWidth
+                type="number"
+                value={equipment.equipTime}
+                onChange={(e) =>
+                  handleChange(index, "equipTime", e.target.value)
+                }
+              />
+            </Grid>
+            <Grid item size={{ xs: 6 }}>
+              <TextField
+                label="Parts Per Run"
+                fullWidth
+                type="number"
+                value={equipment.partsPerRun}
+                onChange={(e) =>
+                  handleChange(index, "partsPerRun", e.target.value)
+                }
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      ))}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={addEquipment}
+        sx={{ mt: 2 }}
+      >
+        Add Equipment
+      </Button>
       <Typography variant="body1" mt={2}>
-        Equipment Cost: <strong>{calculateEquipmentCost()}</strong>
+        Total Equipment Cost: <strong>{calculateTotalEquipmentCost()}</strong>
       </Typography>
     </Box>
   );

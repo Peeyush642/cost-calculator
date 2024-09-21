@@ -1,46 +1,55 @@
-import React from 'react';
-import { TextField, Typography, Box } from '@mui/material';
+import React from "react";
+import { TextField, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useCost } from "../../../../context/costContext";  
+import { useCost } from "../../../../context/costContext";
 
 function EnergyCost({ onCostChange, materialScrapRate, rejectRate }) {
   const { energyCostData, setEnergyCostData } = useCost(); // Get energy data from context
 
   const calculateEnergyCost = () => {
-    const energyCost = (energyCostData.consumptionRate * energyCostData.energyPrice) / ((1 - materialScrapRate / 100) * (1 - rejectRate / 100));
-    onCostChange(energyCost);
+    const energyCost =
+      (energyCostData.consumptionRate * energyCostData.energyPrice) /
+      ((1 - materialScrapRate / 100) * (1 - rejectRate / 100));
+    onCostChange(energyCost.toFixed(2));
     return energyCost.toFixed(2);
   };
 
   const handleChange = (field, value) => {
-    setEnergyCostData(prevData => ({
+    setEnergyCostData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
   };
 
   return (
-    <Box p={2} border={1} borderColor="grey.300" borderRadius={2}>
+    <Box
+      p={2}
+      border={1}
+      borderColor="grey.300"
+      borderRadius={2}
+      height={"60vh"}
+      overflow={"scroll"}
+    >
       <Typography variant="h6" gutterBottom>
         Energy Cost
       </Typography>
       <Grid container spacing={2}>
         <Grid item size={{ xs: 6 }}>
           <TextField
-            label="Consumption Rate"
+            label="Consumption Rate (KW/kg)"
             fullWidth
             type="number"
             value={energyCostData.consumptionRate}
-            onChange={e => handleChange('consumptionRate', e.target.value)}
+            onChange={(e) => handleChange("consumptionRate", e.target.value)}
           />
         </Grid>
         <Grid item size={{ xs: 6 }}>
           <TextField
-            label="Energy Price"
+            label="Energy Price (GBP/KW)"
             fullWidth
             type="number"
             value={energyCostData.energyPrice}
-            onChange={e => handleChange('energyPrice', e.target.value)}
+            onChange={(e) => handleChange("energyPrice", e.target.value)}
           />
         </Grid>
       </Grid>

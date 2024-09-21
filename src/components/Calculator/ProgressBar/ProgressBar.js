@@ -28,7 +28,9 @@ const ProgressBar = ({ currentStep, setCurrentStep }) => {
           }}
           onClick={() => setCurrentStep(index)}
         >
-          <Typography sx={{ flexGrow: 1 }}>{`${index + 1}. ${step}`}</Typography>
+          <Typography sx={{ flexGrow: 1 }}>{`${
+            index + 1
+          }. ${step}`}</Typography>
           {currentStep === index ? (
             <ArrowForwardIcon sx={{ color: `var(--indigo-800)` }} />
           ) : currentStep > index ? (
