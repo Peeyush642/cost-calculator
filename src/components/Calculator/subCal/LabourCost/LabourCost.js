@@ -127,6 +127,7 @@ function LabourCost({ onCostChange, rejectRate }) {
             // </Button>
             <IconButton
               aria-label="delete"
+              color="error"
               onClick={() => removeLabour(index)}
               sx={{ mt: 2 }}
             >
