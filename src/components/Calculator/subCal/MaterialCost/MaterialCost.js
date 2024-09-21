@@ -104,7 +104,7 @@ function MaterialCost({
 
     if (!isNaN(weight) && !isNaN(price) && !isNaN(scrap) && !isNaN(reject)) {
       let rawMaterialCost = (weight * price) / ((1 - scrap) * (1 - reject));
-      return roundedValue(rawMaterialCost); 
+      return roundedValue(rawMaterialCost);
     }
     return 0;
   };
@@ -419,7 +419,10 @@ function MaterialCost({
         Total Raw Material Cost: <strong>{totalRawMaterialCost}</strong>
       </Typography>
       <Typography variant="body1">
-        Total Support Material Cost: <strong>{totalSupportMaterialCost}</strong>
+        Total Support Material Cost:{" "}
+        <strong>
+          {totalSupportMaterialCost || totalCosts.totalSupportMaterialCost}
+        </strong>
       </Typography>
       <Typography variant="h6">
         Total Material Cost: <strong>{totalCost}</strong>

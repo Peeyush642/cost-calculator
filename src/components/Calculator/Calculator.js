@@ -78,12 +78,12 @@ function CostCalculator() {
 
   const calculateTotalCost = () => {
     return (
-      materialCost +
-      labourCost +
-      energyCost +
-      equipmentCost +
-      toolingCost +
-      facilityCost
+      parseFloat(materialCost) +
+      parseFloat(labourCost) +
+      parseFloat(energyCost) +
+      parseFloat(equipmentCost) +
+      parseFloat(toolingCost) +
+      parseFloat(facilityCost)
     ).toFixed(2);
   };
 
