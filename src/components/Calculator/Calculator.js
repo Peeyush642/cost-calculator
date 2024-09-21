@@ -436,7 +436,7 @@ function CostCalculator() {
                   {results.HANDLAYUP.map((run, index) => (
                     <Box key={index}>
                       <Typography variant="subtitle2">
-                        Run {index + 1}
+                        Case {index + 1}
                       </Typography>
                       <Typography variant="body2">
                         Material Cost: {run.materialCost}
@@ -470,7 +470,7 @@ function CostCalculator() {
                   {results.VARTM.map((run, index) => (
                     <Box key={index}>
                       <Typography variant="subtitle2">
-                        Run {index + 1}
+                        Case {index + 1}
                       </Typography>
                       <Typography variant="body2">
                         Material Cost: {run.materialCost}
