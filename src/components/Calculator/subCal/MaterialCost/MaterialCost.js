@@ -74,6 +74,9 @@ function MaterialCost({
     materialScrapRate,
     rejectedRates,
     onRejectRatesChange,
+    materialWeights,
+    onWeightsChange,
+    scrapRates,
   ]);
 
   const handleChange = (index, field, value) => {
