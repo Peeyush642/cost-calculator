@@ -111,7 +111,7 @@ function LabourCost({ onCostChange, rejectRate, onPartsPerRunChange, onProcessTi
           </Grid>
           <Grid item size={{ xs: 6 }}>
             <TextField
-              label="Labour Rate (%)"
+              label="Labour Rate (GBP/hr)"
               fullWidth
               type="number"
               value={labour.labourRate}
