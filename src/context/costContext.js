@@ -82,7 +82,7 @@ export const CostProvider = ({ children }) => {
         unitPrice: "",
         scrapRate: "",
         rejectedRate: "",
-        supportMaterialRate: "",
+        supportMaterialRate: "0",
       },
     ]);
   };

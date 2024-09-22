@@ -54,7 +54,7 @@ function LabourCost({ onCostChange, rejectRate, onPartsPerRunChange, onProcessTi
     onPartsPerRunChange(partsPerRun);
     onProcessTimeChange(processTime);
     console.log("Total Labour Cost: ", totalLabourCost);
-  }, [totalLabourCost, onCostChange, partsPerRun, onPartsPerRunChange]);
+  }, [totalLabourCost, onCostChange, partsPerRun, onPartsPerRunChange, processTime, onProcessTimeChange]);
 
   return (
     <Box

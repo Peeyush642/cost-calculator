@@ -30,6 +30,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Height } from "@mui/icons-material";
+
 
 // Register the required components for Chart.js
 ChartJS.register(
@@ -132,6 +134,7 @@ function CostCalculator() {
     resetAllCosts();
     setCurrentStep(0);
   };
+  
 
   const handleCompareResults = () => {
     setShowComparisonModal(true); // Show the bar chart when the button is clicked
@@ -187,6 +190,7 @@ function CostCalculator() {
 
       const options = {
         responsive: true,
+        // maintainAspectRatio: false,
         plugins: {
           legend: { position: "top" },
           title: {
@@ -196,7 +200,7 @@ function CostCalculator() {
         },
       };
 
-      return <Bar data={data} options={options} />;
+      return <Bar data={data} style={{ position:"relative", height: "60vh", maxHeight:"60vh", top: "1rem"}} options={options} />;
     }
     return null;
   };

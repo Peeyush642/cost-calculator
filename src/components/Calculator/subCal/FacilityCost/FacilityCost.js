@@ -75,15 +75,7 @@ function FacilityCost({ onCostChange, rejectRate, partsPerRun, processTime }) {
           />
         </Grid>
 
-        <Grid item size={{ xs: 6 }}>
-          <TextField
-            label="Process Time (hrs)"
-            fullWidth
-            type="number"
-            value={facilityCostData.processTime}
-            onChange={(e) => handleChange("processTime", e.target.value)}
-          />
-        </Grid>
+        
       </Grid>
       <Typography variant="body1" mt={2}>
         Facility Cost: <strong>{calculateFacilityCost()}</strong>
