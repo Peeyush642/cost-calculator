@@ -214,7 +214,7 @@ function CostCalculator() {
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" gutterBottom align="center">
-        Composite Cost Calculator
+        COST ESTIMATION TOOL FOR COMPOSITE COMPONENT
       </Typography>
 
       {/* Process Selection */}
